@@ -1,5 +1,5 @@
 [versions]
-agp = "8.13.2"
+agp = "9.3.1"
 coreKtx = "1.12.0"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -9,7 +9,7 @@ activityCompose = "1.8.2"
 navigationCompose = "2.7.7"
 hiltNavigationCompose = "1.1.0"
 lifecycleViewmodelCompose = "2.7.0"
-hilt = "2.51"
+hilt = "2.60.1"
 googleServices = "4.5.0"
 firebaseBom = "34.17.0"
 playServicesAuth = "20.7.0"
@@ -17,8 +17,9 @@ playServicesLocation = "21.1.0"
 maplibre = "11.0.0"
 retrofit = "2.9.0"
 coroutines = "1.7.3"
-kotlin = "2.0.21"
-composeBom = "2024.02.01"
+kotlin = "2.4.10"
+ksp = "2.3.11"
+composeBom = "2026.08.00"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -60,4 +61,5 @@ jetbrains-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotli
 jetbrains-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
