@@ -1,14 +1,19 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.jetbrains.kotlin.compose)
     alias(libs.plugins.google.dagger.hilt.android)
     alias(libs.plugins.google.devtools.ksp)
     alias(libs.plugins.google.services)
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 android {
     namespace = "com.atif.campusrideshare"
-    compileSdk = 37
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.atif.campusrideshare"

@@ -1,8 +1,6 @@
 package com.atif.campusrideshare.ui.components
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -11,9 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.atif.campusrideshare.ui.theme.CampusRideShareTheme
 
 @Composable
 fun EmptyState(
@@ -46,13 +42,4 @@ fun EmptyState(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun EmptyStatePreview() {
-    CampusRideShareTheme {
-        EmptyState(
-            message = "No data found",
-            icon = Icons.Default.Info
-        )
-    }
-}
+

@@ -11,8 +11,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import com.atif.campusrideshare.ui.theme.CampusRideShareTheme
 
 @Composable
 fun LoadingOverlay(visible: Boolean) {
@@ -33,10 +31,4 @@ fun LoadingOverlay(visible: Boolean) {
     }
 }
 
-@Preview
-@Composable
-fun LoadingOverlayPreview() {
-    CampusRideShareTheme {
-        LoadingOverlay(visible = true)
-    }
-}
+

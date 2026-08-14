@@ -6,10 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.atif.campusrideshare.data.model.RideModel
-import com.atif.campusrideshare.ui.theme.CampusRideShareTheme
 
 @Composable
 fun DriverCard(ride: RideModel) {
@@ -50,23 +48,4 @@ fun DriverCard(ride: RideModel) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DriverCardPreview() {
-    CampusRideShareTheme {
-        Box(modifier = Modifier.padding(16.dp)) {
-            DriverCard(
-                ride = RideModel(
-                    driverName = "Atif Shahzad",
-                    driverRating = 4.5,
-                    vehicleType = "car",
-                    vehicleModel = "Honda Civic",
-                    vehicleColor = "White",
-                    vehiclePlate = "ABC-123",
-                    seatsLeft = 3,
-                    costPerSeat = 150.0
-                )
-            )
-        }
-    }
-}
+

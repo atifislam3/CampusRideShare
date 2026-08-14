@@ -13,11 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.atif.campusrideshare.data.model.RideModel
-import com.atif.campusrideshare.ui.theme.CampusRideShareTheme
 import com.atif.campusrideshare.util.Config
 import com.atif.campusrideshare.util.TimeAgo
 
@@ -124,23 +122,4 @@ private fun StatusChip(status: String) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun RideCardPreview() {
-    CampusRideShareTheme {
-        RideCard(
-            ride = RideModel(
-                driverName = "Atif Shahzad",
-                driverRating = 4.5,
-                startAddress = "Home",
-                destinationName = "Office",
-                departureTime = System.currentTimeMillis(),
-                seatsLeft = 3,
-                costPerSeat = 150.0,
-                vehicleType = Config.VEHICLE_CAR,
-                status = Config.STATUS_OPEN
-            ),
-            onClick = {}
-        )
-    }
-}
+
