@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "392896102331",
+    "project_id": "campus-ride-share-74816",
+    "storage_bucket": "campus-ride-share-74816.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:392896102331:android:2d64ed4c91d316f6988e9e",
+        "android_client_info": {
+          "package_name": "com.atif.campusrideshare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQsBxiJk5cMH7x1zNudU0OLWGvLa15L70"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
