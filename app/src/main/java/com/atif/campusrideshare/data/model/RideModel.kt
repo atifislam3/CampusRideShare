@@ -1,0 +1,31 @@
+package com.atif.campusrideshare.data.model
+
+data class RideModel(
+    val rideId: String = "",
+    val driverUid: String = "",
+    val driverName: String = "",
+    val driverInitialsColor: Int = 0,
+    val driverRating: Double = 0.0,
+    val vehicleType: String = "",
+    val vehicleModel: String = "",
+    val vehicleColor: String = "",
+    val vehiclePlate: String = "",
+    val startLat: Double = 0.0,
+    val startLng: Double = 0.0,
+    val startAddress: String = "",
+    val destinationName: String = "",
+    val destLat: Double = 0.0,
+    val destLng: Double = 0.0,
+    val distanceKm: Double = 0.0,
+    val costPerSeat: Double = 0.0,
+    val totalSeats: Int = 0,
+    val seatsLeft: Int = 0,
+    val departureTime: Long = 0L,
+    val status: String = "open",
+    val note: String = "",
+    val routePolyline: String = "",
+    val driverLat: Double = 0.0,
+    val driverLng: Double = 0.0,
+    val locationUpdatedAt: Long = 0L,
+    val createdAt: Long = System.currentTimeMillis()
+)
