@@ -40,6 +40,9 @@ class RideDetailViewModel @Inject constructor(
     val ride: StateFlow<RideModel?> = rideRepository.observeRide(rideId)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
+    val requests: StateFlow<List<com.atif.campusrideshare.data.model.RideRequestModel>> = requestRepository.observeRequestsForRide(rideId)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     // Driver: Location sharing job
     private var sharingJob: Job? = null
     private val _isLocationSharing = MutableStateFlow(false)
@@ -67,6 +70,18 @@ class RideDetailViewModel @Inject constructor(
 
     fun requestToJoin() {
         val user = currentUser.value ?: return
+        val currentRide = ride.value ?: return
+
+        if (currentRide.driverUid == user.uid) {
+            _uiState.value = "You cannot join your own ride"
+            return
+        }
+
+        if (requests.value.any { it.passengerUid == user.uid }) {
+            _uiState.value = "You have already requested to join this ride"
+            return
+        }
+
         viewModelScope.launch {
             requestRepository.sendRequest(
                 rideId = rideId,
@@ -74,8 +89,16 @@ class RideDetailViewModel @Inject constructor(
                 passengerName = user.fullName,
                 passengerInitialsColor = user.initialsColor,
                 passengerRating = user.averageRating
-            ).onFailure { _uiState.value = it.message }
+            ).onSuccess {
+                _uiState.value = "SUCCESS: Request sent to driver!"
+            }.onFailure { 
+                _uiState.value = it.message 
+            }
         }
+    }
+
+    fun clearError() {
+        _uiState.value = null
     }
 
     fun markCompleted() {

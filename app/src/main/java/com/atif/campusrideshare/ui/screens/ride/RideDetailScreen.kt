@@ -3,6 +3,7 @@ package com.atif.campusrideshare.ui.screens.ride
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.widget.Toast
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -57,9 +58,20 @@ fun RideDetailScreen(
     val user by viewModel.currentUser.collectAsState()
     val driverLoc by viewModel.driverLocation.collectAsState()
     val isSharing by viewModel.isLocationSharing.collectAsState()
-    val error by viewModel.uiState.collectAsState()
+    val requests by viewModel.requests.collectAsState()
+    val uiMessage by viewModel.uiState.collectAsState()
 
     var showReportDialog by remember { mutableStateOf(false) }
+
+    // Handle UI Messages (Errors or Success)
+    LaunchedEffect(uiMessage) {
+        uiMessage?.let { msg ->
+            if (msg.startsWith("SUCCESS")) {
+                Toast.makeText(context, msg.replace("SUCCESS: ", ""), Toast.LENGTH_SHORT).show()
+                viewModel.clearError()
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -148,14 +160,23 @@ fun RideDetailScreen(
                                 }
                             } else {
                                 val isFull = currentRide.seatsLeft <= 0
+                                val hasRequested = requests.any { it.passengerUid == user?.uid }
+                                val requestStatus = requests.find { it.passengerUid == user?.uid }?.status
+                                
                                 Button(
                                     onClick = { viewModel.requestToJoin() },
                                     modifier = Modifier.fillMaxWidth().height(56.dp),
-                                    enabled = !isFull && currentRide.status == Config.STATUS_OPEN,
-                                    shape = RoundedCornerShape(16.dp)
+                                    enabled = !isFull && !hasRequested && currentRide.status == Config.STATUS_OPEN,
+                                    shape = RoundedCornerShape(16.dp),
+                                    colors = if (hasRequested) ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer, contentColor = MaterialTheme.colorScheme.onSecondaryContainer) else ButtonDefaults.buttonColors()
                                 ) {
+                                    val buttonText = when {
+                                        hasRequested -> "Requested (${requestStatus?.replaceFirstChar { it.uppercase() }})"
+                                        isFull -> "Ride is Full"
+                                        else -> "Request to Join • ${Config.CURRENCY_SYMBOL}${currentRide.costPerSeat.toInt()}"
+                                    }
                                     Text(
-                                        text = if (isFull) "Ride is Full" else "Request to Join • ${Config.CURRENCY_SYMBOL}${currentRide.costPerSeat.toInt()}",
+                                        text = buttonText,
                                         fontWeight = FontWeight.Bold,
                                         style = MaterialTheme.typography.titleMedium
                                     )
@@ -165,6 +186,18 @@ fun RideDetailScreen(
                     }
                 }
             } ?: LoadingOverlay(visible = true)
+
+            // Error Dialog
+            if (uiMessage != null && !uiMessage!!.startsWith("SUCCESS")) {
+                AlertDialog(
+                    onDismissRequest = { viewModel.clearError() },
+                    title = { Text("Notice") },
+                    text = { Text(uiMessage!!) },
+                    confirmButton = {
+                        TextButton(onClick = { viewModel.clearError() }) { Text("OK") }
+                    }
+                )
+            }
         }
     }
 
@@ -207,7 +240,6 @@ fun MapViewContainer(
                     map.setStyle("https://tiles.openfreemap.org/styles/liberty") { style ->
                         // 1. Setup Route
                         val routePoints = PolylineDecoder.decode(ride.routePolyline)
-                        // Filter out (0,0) or invalid points that could cause zoom-out issues
                         val validPoints = routePoints.filter { it.latitude != 0.0 && it.longitude != 0.0 }
                         
                         val routeFeature = JsonObject().apply {
@@ -250,7 +282,6 @@ fun MapViewContainer(
                         // 3. Robust Zoom to fit route
                         if (validPoints.size >= 2) {
                             val bounds = LatLngBounds.Builder().includes(validPoints).build()
-                            // Delay slightly to ensure map view has size
                             mapView.post {
                                 map.easeCamera(CameraUpdateFactory.newLatLngBounds(bounds, 150), 1500)
                             }
