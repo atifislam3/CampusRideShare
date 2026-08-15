@@ -28,7 +28,13 @@
 
 ## 📸 Preview
 
-*(Add your screenshots or a GIF demo here!)*
+<p align="center">
+  <img src="app/screenshots/Signup.jpeg" width="30%" />
+  <img src="app/screenshots/home screen.jpeg" width="30%" />
+  <img src="app/screenshots/post ride.jpeg" width="30%" />
+</p>
+
+*From left to right: Secure Signup, Premium Home Dashboard with Slide-up List, and Interactive Ride Posting.*
 
 ## ⚙️ Getting Started
 
