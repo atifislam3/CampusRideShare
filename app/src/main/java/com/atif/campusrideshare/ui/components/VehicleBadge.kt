@@ -27,7 +27,7 @@ fun VehicleBadge(
     val label = VehicleUtils.displayLabel(vehicleType)
     val seatText = if (vehicleType == Config.VEHICLE_CAR) "$seatsLeft seats" else "1 seat"
     
-    val text = "$emoji $label  •  $seatText  •  Rs. ${costPerSeat.toInt()}/seat"
+    val text = "$emoji $label  •  $seatText  •  ${Config.CURRENCY_SYMBOL} ${costPerSeat.toInt()}/seat"
 
     Box(
         modifier = Modifier

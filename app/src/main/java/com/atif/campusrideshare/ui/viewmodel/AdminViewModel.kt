@@ -28,6 +28,9 @@ class AdminViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<String?>(null) // Error messages
     val uiState: StateFlow<String?> = _uiState.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
     private val _statusFilter = MutableStateFlow<String?>(null)
     val statusFilter: StateFlow<String?> = _statusFilter.asStateFlow()
 
@@ -65,6 +68,11 @@ class AdminViewModel @Inject constructor(
 
     fun setStatusFilter(filter: String?) {
         _statusFilter.value = filter
+    }
+
+    fun refresh() {
+        _isRefreshing.value = true
+        _isRefreshing.value = false
     }
 
     fun clearError() {

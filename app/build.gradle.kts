@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.jetbrains.kotlin.compose)
     alias(libs.plugins.google.dagger.hilt.android)
     alias(libs.plugins.google.devtools.ksp)
@@ -13,19 +12,16 @@ kotlin {
 
 android {
     namespace = "com.atif.campusrideshare"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.atif.campusrideshare"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
     }
 
     buildTypes {
@@ -49,7 +45,8 @@ android {
 
     packaging {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/AL2.0"
+            excludes += "/META-INF/LGPL2.1"
         }
     }
 }

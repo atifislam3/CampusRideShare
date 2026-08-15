@@ -1,5 +1,6 @@
 package com.atif.campusrideshare.data.repository
 
+import android.util.Log
 import com.atif.campusrideshare.data.model.UserModel
 import com.atif.campusrideshare.util.Config
 import com.google.firebase.auth.FirebaseAuth
@@ -17,7 +18,7 @@ import javax.inject.Singleton
 
 @Singleton
 class AuthRepository @Inject constructor(
-    private val auth: FirebaseAuth,
+    val auth: FirebaseAuth,
     private val db: FirebaseDatabase
 ) {
     private val usersRef = db.getReference("users")
@@ -29,9 +30,10 @@ class AuthRepository @Inject constructor(
         phone: String,
         university: String
     ): Result<Unit> = try {
+        Log.d("AUTH_DEBUG", "Starting auth for $email")
         val authResult = auth.createUserWithEmailAndPassword(email, password).await()
-        val uid = authResult.user?.uid ?: throw Exception("Auth failed")
-
+        val uid = authResult.user?.uid ?: throw Exception("Auth failed: UID is null")
+        
         val userModel = UserModel(
             uid = uid,
             fullName = fullName,
@@ -44,9 +46,13 @@ class AuthRepository @Inject constructor(
             createdAt = System.currentTimeMillis()
         )
 
+        Log.d("AUTH_DEBUG", "Auth success. Writing to DB path: /users/$uid")
         usersRef.child(uid).setValue(userModel).await()
+        Log.d("AUTH_DEBUG", "DB write complete!")
+        
         Result.success(Unit)
     } catch (e: Exception) {
+        Log.e("AUTH_DEBUG", "Signup failed: ${e.message}", e)
         Result.failure(e)
     }
 

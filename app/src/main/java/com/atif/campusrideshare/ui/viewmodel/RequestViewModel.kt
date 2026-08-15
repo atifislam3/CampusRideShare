@@ -27,6 +27,9 @@ class RequestViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<String?>(null)
     val uiState: StateFlow<String?> = _uiState.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
     // Mode: Driver viewing requests for a specific ride
     private val rideId: String? = savedStateHandle["rideId"]
     val incomingRequests: StateFlow<List<RideRequestModel>> = if (rideId != null) {
@@ -55,6 +58,11 @@ class RequestViewModel @Inject constructor(
             requestRepository.cancelMyRequest(rideId, requestId)
                 .onFailure { _uiState.value = it.message }
         }
+    }
+
+    fun refresh() {
+        _isRefreshing.value = true
+        _isRefreshing.value = false
     }
 
     fun clearError() {

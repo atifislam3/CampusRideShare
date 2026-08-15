@@ -27,6 +27,9 @@ class NotificationViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<String?>(null) // Error messages
     val uiState: StateFlow<String?> = _uiState.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
     val notifications: StateFlow<List<NotificationModel>> = authRepository.observeCurrentUser()
         .flatMapLatest { user ->
             if (user != null) notificationRepository.observeMyNotifications(user.uid)
@@ -53,6 +56,11 @@ class NotificationViewModel @Inject constructor(
             notificationRepository.markAllAsRead(uid)
                 .onFailure { _uiState.value = it.message }
         }
+    }
+
+    fun refresh() {
+        _isRefreshing.value = true
+        _isRefreshing.value = false
     }
 
     fun clearError() {

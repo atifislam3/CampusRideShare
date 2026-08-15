@@ -1,5 +1,8 @@
 package com.atif.campusrideshare.ui.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.atif.campusrideshare.data.model.RideModel
@@ -37,14 +40,19 @@ class PostRideViewModel @Inject constructor(
     private var currentUser: UserModel? = null
 
     // Form State
-    var startLat = 0.0
-    var startLng = 0.0
-    var startAddress = ""
-    var destLat = 0.0
-    var destLng = 0.0
-    var destinationName = ""
-    var departureTime = 0L
-    var note = ""
+    var startLat by mutableStateOf(0.0)
+    var startLng by mutableStateOf(0.0)
+    var startAddress by mutableStateOf("")
+    var destLat by mutableStateOf(0.0)
+    var destLng by mutableStateOf(0.0)
+    var destinationName by mutableStateOf("")
+    var departureTime by mutableStateOf(0L)
+    var note by mutableStateOf("")
+
+    // Preview state
+    var estimatedDistance by mutableStateOf(0.0)
+    var estimatedCost by mutableStateOf(0.0)
+    var routePolyline by mutableStateOf("")
 
     private val _vehicleType = MutableStateFlow(Config.VEHICLE_CAR)
     val vehicleType: StateFlow<String> = _vehicleType.asStateFlow()
@@ -81,53 +89,72 @@ class PostRideViewModel @Inject constructor(
         }
     }
 
+    fun updateRoutePreview() {
+        if (startLat != 0.0 && destLat != 0.0) {
+            viewModelScope.launch {
+                osrmRepository.getRouteDistanceAndPolyline(startLat, startLng, destLat, destLng)
+                    .onSuccess { (distanceKm, polyline) ->
+                        estimatedDistance = distanceKm
+                        estimatedCost = round(distanceKm * Config.RS_PER_KM)
+                        routePolyline = polyline
+                    }
+            }
+        }
+    }
+
     fun submitRide() {
         val user = currentUser ?: return
         
         viewModelScope.launch {
             _uiState.value = PostRideUiState.Loading
             
-            // 1. Get Distance and Polyline
-            val routeResult = osrmRepository.getRouteDistanceAndPolyline(
-                startLat, startLng, destLat, destLng
-            )
+            // Re-fetch route if it changed or just use cached preview
+            val distance = if (estimatedDistance > 0) estimatedDistance else 0.0
+            val polyline = if (routePolyline.isNotEmpty()) routePolyline else ""
+            val cost = if (estimatedCost > 0) estimatedCost else 0.0
 
-            routeResult.onSuccess { (distanceKm, polyline) ->
-                // 2. Build RideModel
-                val costPerSeat = round(distanceKm * Config.RS_PER_KM)
-                
-                val ride = RideModel(
-                    driverUid = user.uid,
-                    driverName = user.fullName,
-                    driverInitialsColor = user.initialsColor,
-                    driverRating = user.averageRating,
-                    vehicleType = _vehicleType.value,
-                    vehicleModel = user.vehicleModel,
-                    vehicleColor = user.vehicleColor,
-                    vehiclePlate = user.vehiclePlate,
-                    startLat = startLat,
-                    startLng = startLng,
-                    startAddress = startAddress,
-                    destinationName = destinationName,
-                    destLat = destLat,
-                    destLng = destLng,
-                    distanceKm = distanceKm,
-                    costPerSeat = costPerSeat,
-                    totalSeats = _seats.value,
-                    seatsLeft = _seats.value,
-                    departureTime = departureTime,
-                    note = note,
-                    routePolyline = polyline
-                )
-
-                // 3. Post Ride
-                rideRepository.postRide(ride)
-                    .onSuccess { _uiState.value = PostRideUiState.Success(it) }
-                    .onFailure { _uiState.value = PostRideUiState.Error(it.message ?: "Failed to post ride") }
-            }.onFailure {
-                _uiState.value = PostRideUiState.Error("Routing error: ${it.message}")
+            if (distance == 0.0) {
+                // Fetch if not available
+                val routeResult = osrmRepository.getRouteDistanceAndPolyline(startLat, startLng, destLat, destLng)
+                routeResult.onSuccess { (d, p) ->
+                    createRide(user, d, p, round(d * Config.RS_PER_KM))
+                }.onFailure {
+                    _uiState.value = PostRideUiState.Error("Routing error: ${it.message}")
+                }
+            } else {
+                createRide(user, distance, polyline, cost)
             }
         }
+    }
+
+    private suspend fun createRide(user: UserModel, distanceKm: Double, polyline: String, cost: Double) {
+        val ride = RideModel(
+            driverUid = user.uid,
+            driverName = user.fullName,
+            driverInitialsColor = user.initialsColor,
+            driverRating = user.averageRating,
+            vehicleType = _vehicleType.value,
+            vehicleModel = user.vehicleModel,
+            vehicleColor = user.vehicleColor,
+            vehiclePlate = user.vehiclePlate,
+            startLat = startLat,
+            startLng = startLng,
+            startAddress = startAddress,
+            destinationName = destinationName,
+            destLat = destLat,
+            destLng = destLng,
+            distanceKm = distanceKm,
+            costPerSeat = cost,
+            totalSeats = _seats.value,
+            seatsLeft = _seats.value,
+            departureTime = departureTime,
+            note = note,
+            routePolyline = polyline
+        )
+
+        rideRepository.postRide(ride)
+            .onSuccess { _uiState.value = PostRideUiState.Success(it) }
+            .onFailure { _uiState.value = PostRideUiState.Error(it.message ?: "Failed to post ride") }
     }
 
     fun clearState() {

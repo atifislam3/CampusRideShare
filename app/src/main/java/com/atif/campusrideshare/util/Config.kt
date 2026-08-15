@@ -2,17 +2,20 @@ package com.atif.campusrideshare.util
 
 object Config {
     // Firebase
-    const val FIREBASE_DB_URL = "https://your-project-id-default-rtdb.firebaseio.com"
+    const val FIREBASE_DB_URL = "https://campus-ride-share-74816-default-rtdb.firebaseio.com"
+    const val GOOGLE_WEB_CLIENT_ID = "392896102331-o9rddkkpkr0hbp05bmt6eg0ev1al71rs.apps.googleusercontent.com"
     
     // Networking
     const val OSRM_BASE_URL = "https://router.project-osrm.org"
     const val RETROFIT_TIMEOUT_SECONDS = 30L
 
     // Pricing & Limits
+    const val CURRENCY_SYMBOL = "Rs."
     const val RS_PER_KM = 20.0
     const val MAX_CAR_SEATS = 4
     const val MIN_SEATS = 1
     const val RATING_MAX_STARS = 5
+    const val COLOR_RATING_ACTIVE = 0xFFFFC107
 
     // Vehicle Types
     const val VEHICLE_CAR = "car"
@@ -54,6 +57,8 @@ object Config {
     const val NOTIF_TYPE_NEW_RATING = "new_rating"
 
     // Map Configuration
+    const val DEFAULT_LAT = 33.6844
+    const val DEFAULT_LNG = 73.0479
     const val DEFAULT_MAP_ZOOM = 14.0
     const val ROUTE_LINE_WIDTH = 5f
 

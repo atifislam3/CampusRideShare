@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "392896102331",
+    "firebase_url": "https://campus-ride-share-74816-default-rtdb.firebaseio.com",
     "project_id": "campus-ride-share-74816",
     "storage_bucket": "campus-ride-share-74816.firebasestorage.app"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.atif.campusrideshare"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "392896102331-stmhv6sffb65t6n7pq9t6hloot8anrod.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.atif.campusrideshare",
+            "certificate_hash": "e63fd5666e28324dcf181c9634d7092d0eff7ba1"
+          }
+        },
+        {
+          "client_id": "392896102331-o9rddkkpkr0hbp05bmt6eg0ev1al71rs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCQsBxiJk5cMH7x1zNudU0OLWGvLa15L70"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "392896102331-o9rddkkpkr0hbp05bmt6eg0ev1al71rs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

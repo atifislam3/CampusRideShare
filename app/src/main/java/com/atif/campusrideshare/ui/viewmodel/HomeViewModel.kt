@@ -34,8 +34,10 @@ class HomeViewModel @Inject constructor(
         _vehicleFilter
     ) { allRides, query, filter ->
         allRides.filter { ride ->
-            val matchesQuery = ride.destinationName.contains(query, ignoreCase = true) ||
-                    ride.startAddress.contains(query, ignoreCase = true)
+            val matchesQuery = query.isBlank() || 
+                    ride.destinationName.contains(query, ignoreCase = true) ||
+                    ride.startAddress.contains(query, ignoreCase = true) ||
+                    ride.driverName.contains(query, ignoreCase = true)
             val matchesFilter = filter == null || ride.vehicleType == filter
             matchesQuery && matchesFilter
         }

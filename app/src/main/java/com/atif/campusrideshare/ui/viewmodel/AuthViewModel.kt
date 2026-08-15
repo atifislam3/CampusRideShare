@@ -49,9 +49,17 @@ class AuthViewModel @Inject constructor(
     fun signUp(fullName: String, email: String, password: String, phone: String, university: String) {
         viewModelScope.launch {
             _uiState.value = AuthUiState.Loading
-            authRepository.signUp(fullName, email, password, phone, university)
-                .onSuccess { _uiState.value = AuthUiState.Success }
-                .onFailure { _uiState.value = AuthUiState.Error(it.message ?: "Sign up failed") }
+            try {
+                kotlinx.coroutines.withTimeout(30000) { // Increased to 30 second timeout
+                    authRepository.signUp(fullName, email, password, phone, university)
+                        .onSuccess { _uiState.value = AuthUiState.Success }
+                        .onFailure { _uiState.value = AuthUiState.Error(it.message ?: "Sign up failed") }
+                }
+            } catch (e: kotlinx.coroutines.TimeoutCancellationException) {
+                _uiState.value = AuthUiState.Error("Sign up timed out. Please check your internet connection.")
+            } catch (e: Exception) {
+                _uiState.value = AuthUiState.Error(e.message ?: "An unexpected error occurred")
+            }
         }
     }
 
@@ -66,6 +74,12 @@ class AuthViewModel @Inject constructor(
 
     fun signOut() {
         authRepository.signOut()
+    }
+
+    fun updateFcmToken(token: String) {
+        viewModelScope.launch {
+            authRepository.updateFcmToken(token)
+        }
     }
 
     fun clearError() {

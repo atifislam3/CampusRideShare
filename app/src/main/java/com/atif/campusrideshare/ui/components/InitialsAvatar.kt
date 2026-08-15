@@ -24,6 +24,7 @@ import com.atif.campusrideshare.ui.theme.colorFromName
 fun InitialsAvatar(
     name: String,
     size: Dp = 48.dp,
+    modifier: Modifier = Modifier
 ) {
     val initials = name.trim().split("\\s+".toRegex())
         .let { words ->
@@ -35,7 +36,7 @@ fun InitialsAvatar(
         }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(size)
             .background(color = colorFromName(name), shape = CircleShape),
         contentAlignment = Alignment.Center,
@@ -50,5 +51,3 @@ fun InitialsAvatar(
         )
     }
 }
-
-

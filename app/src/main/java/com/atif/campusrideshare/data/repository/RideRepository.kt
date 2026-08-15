@@ -42,8 +42,11 @@ class RideRepository @Inject constructor(
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val rides = snapshot.children.mapNotNull { it.getValue(RideModel::class.java) }
-                    .filter { it.departureTime > now }
-                    .sortedBy { it.departureTime }
+                    .filter { 
+                        // Show everything for now to ensure user sees their rides
+                        it.status == Config.STATUS_OPEN || it.status == Config.STATUS_FULL
+                    }
+                    .sortedByDescending { it.createdAt }
                 trySend(rides)
             }
 

@@ -1,77 +1,71 @@
 package com.atif.campusrideshare.ui.navigation
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.atif.campusrideshare.ui.viewmodel.AuthViewModel
-
-// Placeholder imports for screens that will be generated next
-// These functions are expected to exist in the ui.screens package
-/*
-import com.atif.campusrideshare.ui.screens.splash.SplashScreen
+import com.atif.campusrideshare.ui.screens.admin.AdminDashboardScreen
+import com.atif.campusrideshare.ui.screens.admin.AdminReportDetailScreen
 import com.atif.campusrideshare.ui.screens.auth.LoginScreen
 import com.atif.campusrideshare.ui.screens.auth.SignUpScreen
 import com.atif.campusrideshare.ui.screens.home.HomeScreen
-import com.atif.campusrideshare.ui.screens.ride.PostRideScreen
-import com.atif.campusrideshare.ui.screens.ride.RideDetailScreen
-import com.atif.campusrideshare.ui.screens.ride.MyRidesScreen
-import com.atif.campusrideshare.ui.screens.ride.RequestsScreen
 import com.atif.campusrideshare.ui.screens.notifications.NotificationsScreen
 import com.atif.campusrideshare.ui.screens.profile.ProfileScreen
-import com.atif.campusrideshare.ui.screens.ride.RateUserScreen
-import com.atif.campusrideshare.ui.screens.admin.AdminDashboardScreen
-import com.atif.campusrideshare.ui.screens.admin.AdminReportDetailScreen
-*/
+import com.atif.campusrideshare.ui.screens.ride.*
+import com.atif.campusrideshare.ui.screens.splash.SplashScreen
+import com.atif.campusrideshare.ui.viewmodel.*
 
 @Composable
 fun AppNavGraph(
     navController: NavHostController,
     authViewModel: AuthViewModel
 ) {
-    val currentUser by authViewModel.currentUser.collectAsState()
-
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.route
+        startDestination = Screen.Splash.route,
+        enterTransition = { fadeIn(tween(400)) + slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(400)) },
+        exitTransition = { fadeOut(tween(400)) + slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(400)) },
+        popEnterTransition = { fadeIn(tween(400)) + slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(400)) },
+        popExitTransition = { fadeOut(tween(400)) + slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(400)) }
     ) {
         composable(Screen.Splash.route) {
-            // SplashScreen logic will use authViewModel to decide where to navigate
-            // But we keep the UI logic in the Screen itself.
-            // For now, we reference the expected function name.
-            // SplashScreen(navController, authViewModel)
+            SplashScreen(navController, authViewModel)
         }
 
         composable(Screen.Login.route) {
-            // LoginScreen(navController, authViewModel)
+            LoginScreen(navController, authViewModel)
         }
 
         composable(Screen.SignUp.route) {
-            // SignUpScreen(navController, authViewModel)
+            SignUpScreen(navController, authViewModel)
         }
 
         composable(Screen.Home.route) {
-            // HomeScreen(navController)
+            val viewModel: HomeViewModel = hiltViewModel()
+            HomeScreen(navController, viewModel)
         }
 
         composable(Screen.PostRide.route) {
-            // PostRideScreen(navController)
+            val viewModel: PostRideViewModel = hiltViewModel()
+            PostRideScreen(navController, viewModel)
         }
 
         composable(
             route = Screen.RideDetail.route,
             arguments = listOf(navArgument("rideId") { type = NavType.StringType })
         ) {
-            // RideDetailScreen(navController)
+            val viewModel: RideDetailViewModel = hiltViewModel()
+            RideDetailScreen(navController, viewModel)
         }
 
         composable(Screen.MyRides.route) {
-            // MyRidesScreen(navController)
+            val viewModel: MyRidesViewModel = hiltViewModel()
+            MyRidesScreen(navController, viewModel)
         }
 
         composable(
@@ -82,15 +76,18 @@ fun AppNavGraph(
                 defaultValue = null
             })
         ) {
-            // RequestsScreen(navController)
+            val viewModel: RequestViewModel = hiltViewModel()
+            RequestsScreen(navController, viewModel)
         }
 
         composable(Screen.Notifications.route) {
-            // NotificationsScreen(navController)
+            val viewModel: NotificationViewModel = hiltViewModel()
+            NotificationsScreen(navController, viewModel)
         }
 
         composable(Screen.Profile.route) {
-            // ProfileScreen(navController, authViewModel)
+            val viewModel: ProfileViewModel = hiltViewModel()
+            ProfileScreen(navController, authViewModel, viewModel)
         }
 
         composable(
@@ -99,20 +96,26 @@ fun AppNavGraph(
                 navArgument("rideId") { type = NavType.StringType },
                 navArgument("ratedUid") { type = NavType.StringType }
             )
-        ) {
-            // RateUserScreen(navController)
+        ) { backStackEntry ->
+            val rideId = backStackEntry.arguments?.getString("rideId") ?: ""
+            val ratedUid = backStackEntry.arguments?.getString("ratedUid") ?: ""
+            val raterRole = "passenger" 
+            val viewModel: RatingViewModel = hiltViewModel()
+            RateUserScreen(navController, viewModel, rideId, ratedUid, raterRole)
         }
 
-        // Admin Routes
         composable(Screen.AdminDashboard.route) {
-            // AdminDashboardScreen(navController)
+            val viewModel: AdminViewModel = hiltViewModel()
+            AdminDashboardScreen(navController, viewModel)
         }
 
         composable(
             route = Screen.AdminReportDetail.route,
             arguments = listOf(navArgument("reportId") { type = NavType.StringType })
-        ) {
-            // AdminReportDetailScreen(navController)
+        ) { backStackEntry ->
+            val reportId = backStackEntry.arguments?.getString("reportId") ?: ""
+            val viewModel: AdminViewModel = hiltViewModel()
+            AdminReportDetailScreen(navController, viewModel, reportId)
         }
     }
 }

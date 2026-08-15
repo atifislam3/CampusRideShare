@@ -10,6 +10,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.atif.campusrideshare.util.Config
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -19,7 +20,7 @@ fun RatingBar(
     modifier: Modifier = Modifier,
     starSize: Dp = 16.dp,
     totalStars: Int = 5,
-    activeColor: Color = Color(0xFFFFC107) // Taxi Amber
+    activeColor: Color = Color(Config.COLOR_RATING_ACTIVE) // Taxi Amber
 ) {
     Row(modifier = modifier) {
         for (i in 1..totalStars) {
