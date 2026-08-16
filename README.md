@@ -46,7 +46,7 @@
 ### Setup
 1. **Clone the repo**:
    ```bash
-   git clone https://github.com/your-username/campus-ride-share.git
+   git clone https://github.com/atifislam3/campus-ride-share.git
    ```
 2. **Firebase Config**:
    - Create a project on the [Firebase Console](https://console.firebase.google.com/).
